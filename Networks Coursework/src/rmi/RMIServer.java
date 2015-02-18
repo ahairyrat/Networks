@@ -2,9 +2,10 @@ package rmi;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 
 import common.MessageInfo;
@@ -32,13 +33,14 @@ public class RMIServer extends UnicastRemoteObject implements
 		}
 
 		if (System.getSecurityManager() == null) {
-			System.setSecurityManager(new RMISecurityManager());
+			System.setSecurityManager(new SecurityManager());
 		}
 
 		RMIServer server;
+		int port = Integer.parseInt(args[1]);
 		try {
 			server = new RMIServer();
-			rebindServer(args[0], server, Integer.parseInt(args[1]));
+			rebindServer(args[0], server, port);
 
 			System.out.println(server.getClass().getName()
 					+ " bound to registry");
@@ -46,15 +48,24 @@ public class RMIServer extends UnicastRemoteObject implements
 		} catch (RemoteException e) {
 			System.out.print(e.getMessage());
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.exit(-1);
 		} catch (MalformedURLException e) {
 			System.out.print(e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(-1);
+		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see rmi.RMIServerInterface#receiveMessage(common.MessageInfo)
+	 */
 	@Override
 	public void receiveMessage(MessageInfo info) throws RemoteException {
 
@@ -72,18 +83,32 @@ public class RMIServer extends UnicastRemoteObject implements
 
 	}
 
+	/**
+	 * @param serverURL
+	 * @param server
+	 * @param port
+	 * @throws RemoteException
+	 * @throws MalformedURLException
+	 */
 	protected static void rebindServer(String serverURL, RMIServer server,
-			int port) throws RemoteException, MalformedURLException {
-
-		LocateRegistry.createRegistry(port);
-		System.out.println("Registry created for port " + port);
-
-		String address = "rmi://localhost:" + port + "/"
-				+ serverURL;
-
-		Naming.rebind(address, server);
+			int port) throws MalformedURLException, RemoteException {
+		Registry registry = null;
+		try{
+			registry=LocateRegistry.createRegistry(1099);
+			System.out.println("Registry created at port " + 1099);
+		}catch(ExportException e){
+			System.out.println("The registry already exists");
+			registry = LocateRegistry.getRegistry(1099);
+		}
+	    
+		String address = "//localhost:" + port + "/" + serverURL;
+		System.out.println("Address is: " + address);
+		registry.rebind(address, server);
 	}
 
+	/**
+	 * 
+	 */
 	private void findMissingMessages() {
 		for (int i = 0; i < this.totalMessages; i++)
 			if (!this.receivedMessages[i])

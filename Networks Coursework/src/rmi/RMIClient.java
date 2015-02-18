@@ -1,10 +1,11 @@
 package rmi;
 
 import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+
+import common.MessageInfo;
 
 public class RMIClient {
 
@@ -13,7 +14,7 @@ public class RMIClient {
 	 */
 	public static void main(String[] args) {
 
-		RMIServerInterface RMIServer = null;
+		RMIServerInterface rmiServer = null;
 
 		// Check arguments for Server host and number of messages
 		if (args.length < 2) {
@@ -22,18 +23,19 @@ public class RMIClient {
 			System.exit(-1);
 		}
 
-		String urlServer = new String("rmi://" + args[0] + "/RMIServer");
+		String urlServer = new String("//" + args[0] + "/RMIServer");
 		int numMessages = Integer.parseInt(args[1]);
 
 		if (System.getSecurityManager() == null) {
-			System.setSecurityManager(new RMISecurityManager());
+			System.setSecurityManager(new SecurityManager());
 		}
 
 		try {
 			Registry registry = LocateRegistry.getRegistry();
-			RMIServer = (RMIServerInterface)registry.lookup(urlServer);
+			rmiServer = (RMIServerInterface)registry.lookup(urlServer);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
+			System.out.println(e.getClass().getName());
 			e.printStackTrace();
 			System.out.println("Remote Exception: " + e.getMessage());
 		} catch (NotBoundException e) {
@@ -41,7 +43,15 @@ public class RMIClient {
 			System.out.println("No server bound to port: " + e.getMessage());
 		}
 
-		// TO-DO: Attempt to send messages the specified number of
+		try {
+			rmiServer.receiveMessage(new MessageInfo("1;1"));
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
