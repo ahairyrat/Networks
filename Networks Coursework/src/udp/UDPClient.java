@@ -74,7 +74,7 @@ public class UDPClient {
 				send(info, message);
 				System.out.println("Sent message " + (i + 1) + " out of "
 						+ this.repeats);
-				Thread.sleep(2000);
+				Thread.sleep(500);
 			} catch (IOException e) {
 				failedSends++;
 			} catch (InterruptedException e) {

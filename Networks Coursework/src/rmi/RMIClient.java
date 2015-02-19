@@ -32,7 +32,7 @@ public class RMIClient {
 
 		try {
 			Registry registry = LocateRegistry.getRegistry();
-			rmiServer = (RMIServerInterface)registry.lookup(urlServer);
+			rmiServer = (RMIServerInterface) registry.lookup(urlServer);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getClass().getName());
@@ -42,16 +42,17 @@ public class RMIClient {
 			// TODO Auto-generated catch block
 			System.out.println("No server bound to port: " + e.getMessage());
 		}
-
+		int failedCount = 0;
 		try {
-			rmiServer.receiveMessage(new MessageInfo("1;1"));
+			for (int i = 0; i < numMessages; i++)
+				rmiServer.receiveMessage(new MessageInfo(numMessages, i + 1));
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			failedCount++;
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println("Successful messages: "+ (numMessages-failedCount));
 
 	}
 
