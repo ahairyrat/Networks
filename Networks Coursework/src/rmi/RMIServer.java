@@ -73,8 +73,7 @@ public class RMIServer extends UnicastRemoteObject implements
 
 		System.out.println("Recieved message: " + info.getMessageNum());
 
-		if (this.receivedMessages[this.totalMessages - 1] == true)
-		{
+		if (this.receivedMessages[this.totalMessages - 1] == true) {
 			reset();
 			findMissingMessages();
 		}
@@ -84,7 +83,7 @@ public class RMIServer extends UnicastRemoteObject implements
 	private void reset() {
 		this.receivedMessages = null;
 		this.totalMessages = -1;
-		
+
 	}
 
 	/**

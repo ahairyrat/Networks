@@ -78,7 +78,7 @@ public class UDPClient {
 			} catch (IOException e) {
 				failedSends++;
 			} catch (InterruptedException e) {
-				//TO-DO Add exception handler
+				// TO-DO Add exception handler
 			}
 		}
 		return (this.repeats - failedSends);

@@ -44,6 +44,7 @@ public class MessageInfo implements Serializable {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return new String(totalMessages + ";" + messageNum); // removed the new
 																// line at the
