@@ -47,15 +47,11 @@ public class RMIServer extends UnicastRemoteObject implements
 					+ " bound to registry");
 
 		} catch (RemoteException e) {
-			System.out.print(e.getMessage());
-			// TODO Auto-generated catch block
+			System.err.println("Error creating registry");
 			System.exit(-1);
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("The local machine does not have an IPV4 address.");
+			System.exit(-1);
 		}
 
 	}
@@ -91,16 +87,18 @@ public class RMIServer extends UnicastRemoteObject implements
 
 	}
 
+	
 	/**
 	 * @param registryPort
 	 * @param serverURL
 	 * @param server
 	 * @param serverPort
 	 * @throws RemoteException
-	 * @throws UnknownHostException 
+	 * @throws UnknownHostException
 	 */
-	protected static void rebindServer(int registryPort, String serverURL,
-			RMIServer server, int serverPort) throws RemoteException, UnknownHostException {
+	private static void rebindServer(int registryPort, String serverURL,
+			RMIServer server, int serverPort) throws RemoteException,
+			UnknownHostException {
 		Registry registry = null;
 		try {
 			registry = LocateRegistry.createRegistry(registryPort);
@@ -110,7 +108,8 @@ public class RMIServer extends UnicastRemoteObject implements
 			registry = LocateRegistry.getRegistry(registryPort);
 		}
 
-		String address = "//" +Inet4Address.getLocalHost().getHostAddress()+':' + serverPort + '/' + serverURL;
+		String address = "//" + Inet4Address.getLocalHost().getHostAddress()
+				+ ':' + serverPort + '/' + serverURL;
 		registry.rebind(address, server);
 		System.out.println("Address is: " + address);
 	}
@@ -119,9 +118,15 @@ public class RMIServer extends UnicastRemoteObject implements
 	 * 
 	 */
 	private void findMissingMessages() {
+		boolean missingMessage = false;
 		for (int i = 0; i < this.totalMessages; i++)
 			if (!this.receivedMessages[i])
+			{
 				System.out.println("Missing message: " + (i + 1));
+				missingMessage = true;
+			}
+		if(!missingMessage)
+			System.out.println("All messages successfully recieved");
 	}
 
 	private int totalMessages = -1;

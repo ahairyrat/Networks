@@ -24,7 +24,8 @@ public class RMIClient {
 			System.exit(-1);
 		}
 
-		String urlServer = new String("//" + args[1] +':'+ args[2] + "/" + args[3]);
+		String urlServer = new String("//" + args[1] + ':' + args[2] + '/'
+				+ args[3]);
 		int registryPort = Integer.parseInt(args[0]);
 		int numMessages = Integer.parseInt(args[4]);
 
@@ -34,10 +35,10 @@ public class RMIClient {
 			System.setSecurityManager(new SecurityManager());
 
 		try {
-			System.out.println("Connecting to registry on host: "+ args[1] +" on port: "+ registryPort);
+			System.out.println("Connecting to registry on host: " + args[1]
+					+ " on port: " + registryPort);
 			client.retrieveServer(registryPort, args[1], urlServer);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Remote Exception: " + e.getMessage());
 		} catch (NotBoundException e) {
 			// TODO Auto-generated catch block
