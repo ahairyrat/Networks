@@ -1,5 +1,7 @@
 package rmi;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -51,6 +53,9 @@ public class RMIServer extends UnicastRemoteObject implements
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
@@ -92,9 +97,10 @@ public class RMIServer extends UnicastRemoteObject implements
 	 * @param server
 	 * @param serverPort
 	 * @throws RemoteException
+	 * @throws UnknownHostException 
 	 */
 	protected static void rebindServer(int registryPort, String serverURL,
-			RMIServer server, int serverPort) throws RemoteException {
+			RMIServer server, int serverPort) throws RemoteException, UnknownHostException {
 		Registry registry = null;
 		try {
 			registry = LocateRegistry.createRegistry(registryPort);
@@ -104,9 +110,9 @@ public class RMIServer extends UnicastRemoteObject implements
 			registry = LocateRegistry.getRegistry(registryPort);
 		}
 
-		String address = "//localhost:" + serverPort + "/" + serverURL;
-		System.out.println("Address is: " + address);
+		String address = "//" +Inet4Address.getLocalHost().getHostAddress()+':' + serverPort + '/' + serverURL;
 		registry.rebind(address, server);
+		System.out.println("Address is: " + address);
 	}
 
 	/**

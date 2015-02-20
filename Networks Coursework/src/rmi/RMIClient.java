@@ -17,16 +17,16 @@ public class RMIClient {
 
 		RMIClient client;
 		// Check arguments for Server host and number of messages
-		if (args.length < 4) {
+		if (args.length < 5) {
 			System.err
-					.println("Needs 4 arguments: Registry Port, ServerHostName/IPAddress,"
+					.println("Needs 5 arguments: Registry Port, ServerHostName/IPAddress, port,"
 							+ " Server Name, TotalMessageCount");
 			System.exit(-1);
 		}
 
-		String urlServer = new String("//" + args[1] + "/" + args[2]);
+		String urlServer = new String("//" + args[1] +':'+ args[2] + "/" + args[3]);
 		int registryPort = Integer.parseInt(args[0]);
-		int numMessages = Integer.parseInt(args[3]);
+		int numMessages = Integer.parseInt(args[4]);
 
 		client = new RMIClient(numMessages, null);
 
@@ -34,7 +34,8 @@ public class RMIClient {
 			System.setSecurityManager(new SecurityManager());
 
 		try {
-			client.retrieveServer(registryPort, urlServer);
+			System.out.println("Connecting to registry on host: "+ args[1] +" on port: "+ registryPort);
+			client.retrieveServer(registryPort, args[1], urlServer);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Remote Exception: " + e.getMessage());
@@ -72,9 +73,9 @@ public class RMIClient {
 		rmiServer.receiveMessage(info, message);
 	}
 
-	private void retrieveServer(int port, String urlServer)
+	private void retrieveServer(int port, String host, String urlServer)
 			throws RemoteException, NotBoundException {
-		Registry registry = LocateRegistry.getRegistry(port);
+		Registry registry = LocateRegistry.getRegistry(host, port);
 		this.rmiServer = (RMIServerInterface) registry.lookup(urlServer);
 	}
 
