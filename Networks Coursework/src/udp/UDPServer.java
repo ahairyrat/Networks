@@ -23,15 +23,17 @@ public class UDPServer {
 	 * @param args
 	 */
 	public static void main(String args[]) {
+		
 		int recievePort;
-		// Get the parameters from command line
+		UDPServer server = null;
+		
+		// Check arguments for server port
 		if (args.length < 1) {
 			System.err.println("Arguments required: recieve port");
 			System.exit(-1);
 		}
-
+		
 		recievePort = Integer.parseInt(args[0]);
-		UDPServer server = null;
 
 		try {
 			// Instantiate and run the server
