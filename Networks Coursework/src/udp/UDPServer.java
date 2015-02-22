@@ -5,6 +5,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 
 import common.MessageInfo;
 
@@ -25,6 +27,7 @@ public class UDPServer {
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 		}
+		System.out.println("Server started");
 		while (!close) {
 			buf = new byte[256];
 			pac = new DatagramPacket(buf, buf.length);
@@ -34,14 +37,21 @@ public class UDPServer {
 				processMessage(new String(pac.getData()));
 
 			} catch (SocketTimeoutException e) {
-				System.err.println("The socket timed out");
+				this.closeConnection();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 			}
 		}
-		for (int i = 0; i < this.receivedMessages.length; i++)
-			if (!this.receivedMessages[i])
-				System.out.println("Missing message: " + (i + 1));
+		this.receivedMessages.sort(null);
+		for (int i = 0; i < (this.receivedMessages.size() - 1); i++)
+			for (int n = this.receivedMessages.get(i); (n + 1) < this.receivedMessages
+					.get(i + 1); n++)
+				System.out.println("Missing message: " + (n + 1));
+
+		System.out.println("Recieved " + this.receivedMessages.size()
+				+ " out of " + this.totalMessages + " : "
+				+ ((this.receivedMessages.size() * 100) / this.totalMessages)
+				+ "%");
 	}
 
 	/**
@@ -51,7 +61,7 @@ public class UDPServer {
 	public UDPServer(int recvSoc) throws SocketException {
 		this.recvSoc = new DatagramSocket(recvSoc);
 		this.totalMessages = 0;
-		this.receivedMessages = null;
+		this.receivedMessages = new ArrayList<Integer>();
 		this.close = false;
 
 		this.recvSoc.setReuseAddress(true);
@@ -105,20 +115,22 @@ public class UDPServer {
 		String[] fields = data.split(" ", 2);
 		MessageInfo info = new MessageInfo(fields[0]);
 
-		if (this.totalMessages <= 0) {
+		if (this.totalMessages <= 0)
 			this.totalMessages = info.getTotalMessages();
-			this.receivedMessages = new boolean[this.totalMessages];
-		}
 
-		this.receivedMessages[info.getMessageNum() - 1] = true;
-		System.out.println("Recieved message: " + info.getMessageNum());
-		if (this.receivedMessages[this.totalMessages - 1] == true)
+		this.receivedMessages.add(info.getMessageNum());
+
+		if (info.getMessageNum() == this.totalMessages)
 			close = true;
+	}
+
+	private void closeConnection() {
+		close = true;
 	}
 
 	private DatagramSocket recvSoc;
 	private int totalMessages;
-	private boolean[] receivedMessages;
+	private List<Integer> receivedMessages;
 	private boolean close;
 
 }

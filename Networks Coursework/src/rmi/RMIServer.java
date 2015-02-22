@@ -7,6 +7,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import common.MessageInfo;
 
@@ -14,7 +16,7 @@ public class RMIServer extends UnicastRemoteObject implements
 		RMIServerInterface {
 
 	public RMIServer() throws RemoteException {
-
+		this.receivedMessages = new ArrayList<Integer>();
 	}
 
 	/**
@@ -50,7 +52,8 @@ public class RMIServer extends UnicastRemoteObject implements
 			System.err.println("Error creating registry");
 			System.exit(-1);
 		} catch (UnknownHostException e) {
-			System.err.println("The local machine does not have an IPV4 address.");
+			System.err
+					.println("The local machine does not have an IPV4 address.");
 			System.exit(-1);
 		}
 
@@ -65,18 +68,14 @@ public class RMIServer extends UnicastRemoteObject implements
 	public <T> void receiveMessage(MessageInfo info, T message)
 			throws RemoteException {
 
-		if (this.totalMessages <= 0) {
+		if (this.totalMessages <= 0)
 			this.totalMessages = info.getTotalMessages();
-			this.receivedMessages = new boolean[this.totalMessages];
-		}
 
-		this.receivedMessages[info.getMessageNum() - 1] = true;
+		this.receivedMessages.add(info.getMessageNum());
 
-		System.out.println("Recieved message: " + info.getMessageNum());
-
-		if (this.receivedMessages[this.totalMessages - 1] == true) {
-			reset();
+		if (info.getMessageNum() == this.totalMessages) {
 			findMissingMessages();
+			reset();
 		}
 
 	}
@@ -84,10 +83,9 @@ public class RMIServer extends UnicastRemoteObject implements
 	private void reset() {
 		this.receivedMessages = null;
 		this.totalMessages = -1;
-
+		this.receivedMessages = new ArrayList<Integer>();
 	}
 
-	
 	/**
 	 * @param registryPort
 	 * @param serverURL
@@ -118,18 +116,19 @@ public class RMIServer extends UnicastRemoteObject implements
 	 * 
 	 */
 	private void findMissingMessages() {
-		boolean missingMessage = false;
-		for (int i = 0; i < this.totalMessages; i++)
-			if (!this.receivedMessages[i])
-			{
-				System.out.println("Missing message: " + (i + 1));
-				missingMessage = true;
-			}
-		if(!missingMessage)
-			System.out.println("All messages successfully recieved");
+		this.receivedMessages.sort(null);
+		for (int i = 0; i < (this.receivedMessages.size() - 1); i++)
+			for (int n = this.receivedMessages.get(i); (n + 1) < this.receivedMessages
+					.get(i + 1); n++)
+				System.out.println("Missing message: " + (n + 1));
+
+		System.out.println("Recieved " + this.receivedMessages.size()
+				+ " out of " + this.totalMessages + " : "
+				+ ((this.receivedMessages.size() * 100) / this.totalMessages)
+				+ "%");
 	}
 
 	private int totalMessages = -1;
-	private boolean[] receivedMessages;
+	private List<Integer> receivedMessages;
 
 }
