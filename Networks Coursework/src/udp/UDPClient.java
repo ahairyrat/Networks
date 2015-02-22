@@ -102,6 +102,8 @@ public class UDPClient {
 		// Open a new socket to send packets through
 		DatagramSocket socket = new DatagramSocket();
 
+		System.out.println("Sending messages...");
+		
 		// Loop through all messages, create the message info and send them
 		for (int i = 0; i < this.repeats; i++) {
 			
@@ -134,7 +136,7 @@ public class UDPClient {
 	private <T> void send(MessageInfo info, T message, DatagramSocket socket)
 			throws IOException {
 
-		// Convert a ll of the input data to a byte array
+		// Convert all of the input data to a byte array
 		byte data[] = (info.toString() + " " + message.toString()).getBytes();
 		// Create the packet to be sent
 		DatagramPacket packet = new DatagramPacket(data, data.length,

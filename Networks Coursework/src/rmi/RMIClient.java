@@ -101,6 +101,8 @@ public class RMIClient {
 		int failedSends = 0;
 		MessageInfo info;
 
+		System.out.println("Sending messages...");
+		
 		// Loop through all messages, create the message info and send them
 		for (int i = 0; i < this.repeats; i++) {
 
@@ -118,7 +120,7 @@ public class RMIClient {
 		}
 
 		// Return the number of messages that have successfully sent
-		return (this.repeats - failedSends);
+		return (this.repeats - failedSends+1);
 	}
 
 	/**
@@ -138,7 +140,7 @@ public class RMIClient {
 
 	/**
 	 * A method that retrieves the server reference from the registry on the
-	 * port and host specidfied that has the URL gived
+	 * port and host specified that has the URL given
 	 * 
 	 * @param port
 	 * @param host
