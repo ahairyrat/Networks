@@ -23,16 +23,16 @@ public class UDPServer {
 	 * @param args
 	 */
 	public static void main(String args[]) {
-		
+
 		int recievePort;
 		UDPServer server = null;
-		
+
 		// Check arguments for server port
 		if (args.length < 1) {
 			System.err.println("Arguments required: recieve port");
 			System.exit(-1);
 		}
-		
+
 		recievePort = Integer.parseInt(args[0]);
 
 		try {
@@ -153,13 +153,19 @@ public class UDPServer {
 		// Sort the messages into ascending order
 		this.receivedMessages.sort(null);
 
+		// If the very first message was missed, add 0 as the first element to
+		// allow the search to work correctly
+		if (this.receivedMessages.get(0) > 1)
+			this.receivedMessages.add(0, 0);
+
 		// Loop through the list of received messages
 		// For each message, print out all numbers between it and the next
 		// message number as failed messages
-		for (int i = 0; i < (this.receivedMessages.size() - 1); i++)
+		for (int i = 0; i < (this.receivedMessages.size() - 1); i++) {
 			for (int n = this.receivedMessages.get(i); (n + 1) < this.receivedMessages
 					.get(i + 1); n++)
 				System.out.println("Missing message: " + (n + 1));
+		}
 
 		// Calculate the number and percentage of successful messages received
 		System.out.println("Recieved " + this.receivedMessages.size()

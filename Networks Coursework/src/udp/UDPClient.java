@@ -57,7 +57,7 @@ public class UDPClient {
 
 			// Send all messages with no message data and count the number of
 			// successful sends
-			successSends = client.sendLoop(null);
+			successSends = client.sendLoop("");
 
 		} catch (SocketException e) {
 

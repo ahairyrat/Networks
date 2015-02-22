@@ -158,6 +158,11 @@ public class RMIServer extends UnicastRemoteObject implements
 
 		// Sort the messages into ascending order
 		this.receivedMessages.sort(null);
+		
+		// If the very first message was missed, add 0 as the first element to
+		// allow the search to work correctly
+		if (this.receivedMessages.get(0) > 1)
+			this.receivedMessages.add(0, 0);
 
 		// Loop through the list of received messages
 		// For each message, print out all numbers between it and the next
