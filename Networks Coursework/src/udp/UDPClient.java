@@ -17,7 +17,6 @@ public class UDPClient {
 
 	/**
 	 * @param args
-	 * @author pe313
 	 */
 	public static void main(String[] args) {
 		InetAddress serverAddr = null;
@@ -58,7 +57,6 @@ public class UDPClient {
 	 * @param serverAddr
 	 * @param destPort
 	 * @param repeats
-	 * @author pe313
 	 */
 	public UDPClient(InetAddress serverAddr, int destPort, int repeats) {
 		this.serverAddr = serverAddr;
@@ -69,8 +67,7 @@ public class UDPClient {
 	/**
 	 * @param message
 	 * @return successfulSends
-	 * @author pe313
-	 * @throws SocketException 
+	 * @throws SocketException
 	 */
 	private <T> int sendLoop(T message) throws SocketException {
 		int failedSends = 0;
@@ -80,8 +77,8 @@ public class UDPClient {
 			info = new MessageInfo(repeats, i + 1);
 			try {
 				send(info, message, socket);
-				//System.out.println("Sent message " + (i + 1) + " out of "
-				//		+ this.repeats);
+				// System.out.println("Sent message " + (i + 1) + " out of "
+				// + this.repeats);
 			} catch (IOException e) {
 				failedSends++;
 			}
@@ -94,14 +91,14 @@ public class UDPClient {
 	 * @param info
 	 * @param message
 	 * @throws IOException
-	 * @author pe313
 	 */
-	private <T> void send(MessageInfo info, T message, DatagramSocket socket) throws IOException {
+	private <T> void send(MessageInfo info, T message, DatagramSocket socket)
+			throws IOException {
 		byte data[] = (info.toString() + " " + message.toString()).getBytes();
 
 		DatagramPacket packet = new DatagramPacket(data, data.length,
 				this.serverAddr, this.destPort);
-		
+
 		socket.send(packet);
 	}
 

@@ -12,9 +12,16 @@ import java.util.List;
 
 import common.MessageInfo;
 
+/**
+ * @author pe313
+ *
+ */
 public class RMIServer extends UnicastRemoteObject implements
 		RMIServerInterface {
 
+	/**
+	 * @throws RemoteException
+	 */
 	public RMIServer() throws RemoteException {
 		this.receivedMessages = new ArrayList<Integer>();
 	}
@@ -68,8 +75,11 @@ public class RMIServer extends UnicastRemoteObject implements
 	public <T> void receiveMessage(MessageInfo info, T message)
 			throws RemoteException {
 
-		if (this.totalMessages <= 0)
+		if (this.totalMessages <= 0) {
+			System.out.println("Recieving messages...");
 			this.totalMessages = info.getTotalMessages();
+		}
+		this.totalMessages = info.getTotalMessages();
 
 		this.receivedMessages.add(info.getMessageNum());
 
@@ -80,6 +90,9 @@ public class RMIServer extends UnicastRemoteObject implements
 
 	}
 
+	/**
+	 * 
+	 */
 	private void reset() {
 		this.receivedMessages = null;
 		this.totalMessages = -1;
@@ -123,7 +136,7 @@ public class RMIServer extends UnicastRemoteObject implements
 				System.out.println("Missing message: " + (n + 1));
 
 		System.out.println("Recieved " + this.receivedMessages.size()
-				+ " out of " + this.totalMessages + " : "
+				+ " messages out of " + this.totalMessages + " : "
 				+ ((this.receivedMessages.size() * 100) / this.totalMessages)
 				+ "%");
 	}
