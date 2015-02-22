@@ -155,7 +155,7 @@ public class UDPServer {
 
 		// If the very first message was missed, add 0 as the first element to
 		// allow the search to work correctly
-		if (this.receivedMessages.get(0) > 1)
+		if (!this.receivedMessages.contains(1))
 			this.receivedMessages.add(0, 0);
 
 		// Loop through the list of received messages
@@ -166,6 +166,11 @@ public class UDPServer {
 					.get(i + 1); n++)
 				System.out.println("Missing message: " + (n + 1));
 		}
+
+		// If the element 0 was artificially added, remove it to get the correct
+		// size
+		if (this.receivedMessages.contains(0))
+			this.receivedMessages.remove(0);
 
 		// Calculate the number and percentage of successful messages received
 		System.out.println("Recieved " + this.receivedMessages.size()

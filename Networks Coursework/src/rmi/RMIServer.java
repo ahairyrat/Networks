@@ -155,14 +155,16 @@ public class RMIServer extends UnicastRemoteObject implements
 	 * percentage of successful messages
 	 */
 	private void findMissingMessages() {
-
+		
+		// If the very first message was missed, add 0 element to
+		// allow the search to work correctly
+		if (!this.receivedMessages.contains(1))
+			this.receivedMessages.add(0);
+		
 		// Sort the messages into ascending order
 		this.receivedMessages.sort(null);
 		
-		// If the very first message was missed, add 0 as the first element to
-		// allow the search to work correctly
-		if (this.receivedMessages.get(0) > 1)
-			this.receivedMessages.add(0, 0);
+		
 
 		// Loop through the list of received messages
 		// For each message, print out all numbers between it and the next
@@ -171,7 +173,11 @@ public class RMIServer extends UnicastRemoteObject implements
 			for (int n = this.receivedMessages.get(i); (n + 1) < this.receivedMessages
 					.get(i + 1); n++)
 				System.out.println("Missing message: " + (n + 1));
-
+		
+		// If the element 0 was artificially added, remove it to get the correct size
+		if (this.receivedMessages.contains(0))
+			this.receivedMessages.remove(0);
+		
 		// Calculate the number and percentage of successful messages received
 		System.out.println("Recieved " + this.receivedMessages.size()
 				+ " messages out of " + this.totalMessages + " : "
