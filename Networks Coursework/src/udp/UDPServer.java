@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import common.MessageInfo;
@@ -151,7 +152,7 @@ public class UDPServer {
 	private void findMissingMessages() {
 
 		// Sort the messages into ascending order
-		this.receivedMessages.sort(null);
+		Collections.sort(this.receivedMessages);
 
 		// If the very first message was missed, add 0 as the first element to
 		// allow the search to work correctly

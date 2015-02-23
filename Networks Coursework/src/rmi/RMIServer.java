@@ -8,6 +8,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import common.MessageInfo;
@@ -162,7 +163,7 @@ public class RMIServer extends UnicastRemoteObject implements
 			this.receivedMessages.add(0);
 		
 		// Sort the messages into ascending order
-		this.receivedMessages.sort(null);
+		Collections.sort(this.receivedMessages);
 		
 		
 
