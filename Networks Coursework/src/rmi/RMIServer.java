@@ -1,6 +1,6 @@
 package rmi;
 
-import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -66,7 +66,7 @@ public class RMIServer extends UnicastRemoteObject implements
 			// If the server cannot find the IP address of the localhost then
 			// the registry cannot be stored
 			System.err
-					.println("The local machine does not have an IPV4 address.");
+					.println("Unable to find the local machine's IP  address.");
 			System.exit(-1);
 		}
 
@@ -140,8 +140,8 @@ public class RMIServer extends UnicastRemoteObject implements
 
 		}
 		// Create the URL by which the server can be found using the hosts IP
-		// address
-		String address = "//" + Inet4Address.getLocalHost().getHostAddress()
+		// address. This can be IPv4 or IPv6
+		String address = "//" + InetAddress.getLocalHost().getHostAddress()
 				+ ':' + serverPort + '/' + serverURL;
 
 		// Bind the URL to the registry overwriting all previous objects
